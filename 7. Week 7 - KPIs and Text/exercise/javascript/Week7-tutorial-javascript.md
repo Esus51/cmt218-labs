@@ -45,5 +45,5 @@ Use D3 to select elements by ID and set their text content.
 ```javascript
 d3.select("#total-runs").text(stats.TotalRuns);
 d3.select("#total-distance").text(stats.TotalDistance);
-// ...
+d3.select("#avg-distance").text(stats.AvgDistance);
 ```

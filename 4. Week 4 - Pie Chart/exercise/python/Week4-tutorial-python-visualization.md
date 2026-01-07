@@ -18,29 +18,34 @@ df = pd.read_csv('../../data/time_of_day_counts.csv')
 ### 2. Creating the Pie Chart
 
 We use `plt.pie()`.
+*   **x**: The values (Counts).
+*   **labels**: The categories (AM/PM).
+*   **autopct**: String format to display percentages (e.g., `%1.1f%%` means 1 decimal place).
 
 ```python
 plt.figure(figsize=(8, 8))
 
-# Data
+# Data preparation
 counts = df['Count']
 labels = df['Category']
 
+# Define colors (Purple Theme)
+# Lavender for AM, Rebeccapurple for PM
+colors = ['#E6E6FA', 'rebeccapurple'] 
+
 # Plot
-plt.pie(counts, labels=labels, autopct='%1.1f%%', startangle=90)
-```
+plt.pie(
+    counts, 
+    labels=labels, 
+    autopct='%1.1f%%', 
+    startangle=90,      # Start vertical at top
+    colors=colors,
+    textprops={'fontsize': 14} # Make text readable
+)
 
-### 3. Customizing
-
-Adding colors and a title.
-
-```python
-colors = ['#f1c40f', '#e67e22', '#34495e', '#95a5a6'] # Gold, Orange, Dark Blue, Grey
-
-plt.pie(counts, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
-plt.title('Runs by Time of Day')
+plt.title('Runs by Time of Day', fontsize=16)
 
 plt.tight_layout()
-plt.savefig('time_of_day_pie.png')
+plt.savefig('time_of_day_pie.png', dpi=300)
 plt.show()
 ```

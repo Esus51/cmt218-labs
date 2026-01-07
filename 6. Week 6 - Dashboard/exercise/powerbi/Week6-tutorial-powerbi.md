@@ -32,3 +32,15 @@ Assemble a **Dashboard** (Report Page) combining visuals from Weeks 1-4.
     *   Bottom Right: Donut Chart.
 2.  **Align**: Use **Format > Align** tools to ensure they snap to a grid.
 3.  **Titles**: Ensure all titles are consistent in font size (e.g., DIN, Size 12).
+
+### 4. Interactivity (Crucial Step)
+
+The power of PowerBI is that charts talk to each other.
+
+1.  Select your **Bar Chart** (Monthly Distances).
+2.  Click a bar (e.g., "May").
+3.  **Observe**: Does the Scatter Plot filter to show only runs from May? Does the Pie Chart update?
+4.  **Edit Interactions** (Optional Control):
+    *   Select a visual.
+    *   Go to **Format > Edit Interactions**.
+    *   You will see icons (Filter / Highlight / None) appear on other charts. Use this to control exactly what happens when you click.

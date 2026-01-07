@@ -31,7 +31,7 @@ Use `scale_fill_viridis_c` or `scale_fill_gradient` to change colors.
 ```r
 ggplot(df, aes(x = Month, y = TotalDistance, fill = TotalDistance)) +
   geom_col() +
-  scale_fill_viridis_c(option = "plasma")
+  scale_fill_gradient(low = "#E6E6FA", high = "rebeccapurple")
 ```
 
 ### 4. Refining

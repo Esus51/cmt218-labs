@@ -21,43 +21,42 @@ df <- read_csv("../../data/time_of_day_counts.csv")
 
 ### 3. Creating the Pie Chart
 
-In `ggplot2`, a pie chart is a stacked bar chart transformed into polar coordinates.
+**"Where is `geom_pie`?"**
+It doesn't exist! In the Grammar of Graphics (ggplot2), a pie chart is simply a **Stacked Bar Chart** plotted in **Polar Coordinates**.
 
 **Step 3.1: Create a Stacked Bar**
-We dummy map x to `""` (empty string) to stack everything in one single bar.
+*   **x**: Empty string `""` (Stacks everything on one bar).
+*   **y**: Count.
+*   **fill**: Category.
 
 ```r
-p <- ggplot(df, aes(x = "", y = Count, fill = Category)) +
-  geom_bar(stat = "identity", width = 1)
-```
-
-**Step 3.2: Convert to Polar**
-
-```r
-p + coord_polar("y", start = 0)
-```
-
-### 4. Refining
-
-Adding labels and removing axes.
-
-```r
-# Calculate Labels
-df$label <- paste0(df$Category, "\n", round(df$Count / sum(df$Count) * 100, 1), "%")
+# Calculate percentages for labels
+df <- df %>%
+  mutate(
+    perc = Count / sum(Count),
+    label = paste0(Category, "\n", scales::percent(perc))
+  )
 
 ggplot(df, aes(x = "", y = Count, fill = Category)) +
-  geom_bar(stat = "identity", width = 1) +
+  geom_col(width = 1) +
+  
+  # Coordinate Transformation: Cartesian -> Polar
+  # "y" means map the Y-axis (Counts) to the angle
   coord_polar("y", start = 0) +
   
-  # Add Text Labels
+  # Custom Colors
+  scale_fill_manual(values = c("AM" = "#E6E6FA", "PM" = "rebeccapurple")) +
+  
+  # Add Labels
+  # position_stack(vjust = 0.5) centers text in the slice
   geom_text(aes(label = label), position = position_stack(vjust = 0.5)) +
   
-  # Remove axes lines
+  # Remove background, axes, and gridlines (Theme Void)
   theme_void() +
   labs(title = "Runs by Time of Day")
 ```
 
-### 5. Saving
+### 4. Saving
 
 ```r
 ggsave("time_of_day_pie.png", width = 8, height = 8)

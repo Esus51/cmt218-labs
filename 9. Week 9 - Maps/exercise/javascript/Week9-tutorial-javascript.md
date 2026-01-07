@@ -19,7 +19,7 @@ Paths in D3 are SVG `path` elements.
 ```css
 path {
     fill: none;
-    stroke: steelblue;
+    stroke: rebeccapurple;
     stroke-width: 2px;
 }
 ```

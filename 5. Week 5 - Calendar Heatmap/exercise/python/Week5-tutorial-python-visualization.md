@@ -38,7 +38,7 @@ plt.figure(figsize=(15, 8))
 
 sns.heatmap(
     matrix, 
-    cmap='Greens',      # Color scheme
+    cmap='Purples',     # Color scheme (Purple theme)
     linewidths=0.5,     # Space between cells
     linecolor='white'
 )

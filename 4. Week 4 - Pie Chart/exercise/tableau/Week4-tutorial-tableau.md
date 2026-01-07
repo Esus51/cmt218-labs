@@ -8,17 +8,34 @@ Create a **Pie Chart** of Runs by Time of Day.
 
 ### 1. Connect to Data
 
-1.  Connect to `time_of_day_counts.csv`.
+1.  Connect to `Week 4/data/time_of_day_counts.csv`.
 
 ### 2. Build the View
 
-1.  **Marks Card**: Change dropdown to **Pie**.
-2.  **Angle**: Drag `Count` to Angle.
-3.  **Color**: Drag `Category` (AM/PM) to Color.
-4.  **Label**: Drag `Category` and `Count` to Label.
+Building a Pie Chart in Tableau is manual compared to other tools.
 
-### 3. Format
+1.  **Marks Card**: Change the dropdown from "Automatic" to **Pie**.
+2.  **Angle**: Drag `Count` to the **Angle** card.
+3.  **Color**: Drag `Category` to the **Color** card.
+    *   *Result*: A tiny pie chart appears.
 
-1.  **Sort**: Click the Sort icon in the toolbar to order slices by size if desired.
-2.  **Size**: Adjust the Size slider to make the pie larger.
-3.  **Colors**: Edit Colors > Assign distinct shades (e.g., Light Purple / Dark Purple).
+### 3. Format & Labels
+
+1.  **Make it bigger**:
+    *   Change the view from "Standard" to **Entire View** (toolbar dropdown).
+    *   Or click **Size** on Marks card and drag slider.
+2.  **Labels**:
+    *   Drag `Category` to **Label**.
+    *   Drag `Count` to **Label**.
+3.  **Percent of Total**:
+    *   We want to see %, not just the raw count.
+    *   Right-click the `SUM(Count)` pill that is on the **Label** card.
+    *   Select **Quick Table Calculation** > **Percent of Total**.
+4.  **Colors**:
+    *   Click **Color** > Edit Colors.
+    *   Assign Purple for PM, Grey for AM (or similar).
+
+### 4. Clean Up
+
+1.  Chart Title: "Time of Day Distribution".
+2.  Hide the Legend if labels are clear enough (Right-click legend > Hide Card).

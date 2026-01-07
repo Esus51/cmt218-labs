@@ -1,6 +1,8 @@
 # Week 4 - Data Extraction (Python)
 
-In this week's exercise, we will classify runs into Morning (AM), Afternoon/Evening (PM), or Both, based on their start and end times.
+## Introduction
+
+In this week's exercise, we will classify runs into **Morning (AM)** and **Afternoon (PM)** to visualize the split in a Pie Chart.
 
 ## Goal
 
@@ -8,47 +10,69 @@ Create `time_of_day_counts.csv` with counts for each category.
 
 ## Instructions
 
-1.  **Setup**:
-    *   Virtual env + pandas.
+### 1. Setup
 
-2.  **Process**:
-    *   **Read Data**:
-    ```python
-    df = pd.read_csv('../../data/runs_only_redacted.csv')
-    df.columns = [c.lower() for c in df.columns]
-    ```
-    *   **Parse Time**:
-    ```python
-    df['Start'] = pd.to_datetime(df['start_date'])
-    df['Duration'] = pd.to_timedelta(df['moving_time'], unit='s')
-    df['End'] = df['Start'] + df['Duration']
-    ```
-    *   **Classify**:
-    Define a function to categorize each row.
-    *   **Both**: If start is before noon and end is after noon.
-    *   **AM**: Start < 12:00.
-    *   **PM**: Start >= 12:00.
-    ```python
-    def classify(row):
-        noon = row['Start'].replace(hour=12, minute=0, second=0)
-        if row['Start'] < noon and row['End'] > noon:
-            return 'Both'
-        elif row['Start'].hour < 12:
-            return 'AM'
-        else:
-            return 'PM'
-            
-    df['Category'] = df.apply(classify, axis=1)
-    ```
+*   Use your virtual environment with pandas.
 
-3.  **Aggregate**:
-    *   Count the occurrences of each category.
-    ```python
-    output = df['Category'].value_counts().reset_index()
-    output.columns = ['Category', 'Count']
-    output.to_csv('time_of_day_counts.csv', index=False)
-    ```
+### 2. Process
+
+**Read Data**:
+
+```python
+import pandas as pd
+
+df = pd.read_csv('../../data/runs_only_redacted.csv')
+```
+
+**Parse Time**:
+We need to extract the hour from the start string.
+
+```python
+# Convert to datetime objects
+df['Start'] = pd.to_datetime(df['start_date'])
+
+# Extract the hour (0-23)
+df['Hour'] = df['Start'].dt.hour
+```
+
+**Classify**:
+We will derive a category based on the start hour.
+*   **AM**: Start Hour < 12 (Midnight to 11:59 AM)
+*   **PM**: Start Hour >= 12 (Noon to 11:59 PM)
+
+```python
+# Define a simple function or use numpy/apply
+# Here we use a list comprehension for readability
+df['Category'] = ['AM' if h < 12 else 'PM' for h in df['Hour']]
+
+# Alternative using apply:
+# df['Category'] = df['Hour'].apply(lambda x: 'AM' if x < 12 else 'PM')
+```
+
+### 3. Aggregate
+
+For a Pie Chart, we need the total count of runs in each distinct category.
+
+```python
+# value_counts() calculates the frequency of each unique value
+counts = df['Category'].value_counts().reset_index()
+
+# Rename columns for clarity
+counts.columns = ['Category', 'Count']
+```
+
+### 4. Output
+
+```python
+counts.to_csv('time_of_day_counts.csv', index=False)
+```
 
 ## Verification
 
-You should see 3 rows (AM, PM, Both) with their respective counts.
+Your CSV file should look something like this:
+
+```csv
+Category,Count
+AM,154
+PM,89
+```

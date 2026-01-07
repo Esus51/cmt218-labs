@@ -32,16 +32,16 @@ metrics = [
     ('Total Runs', kpis['TotalRuns']),
     ('Total Distance', f"{kpis['TotalDistance']} km"),
     ('Longest Run', f"{kpis['LongestRun']} km"),
-    ('Avg Pace', f"{kpis['AveragePace']} min/km")
+    ('Avg Distance', f"{kpis['AvgDistance']} km")
 ]
 
 for i, (label, value) in enumerate(metrics):
     x_pos = (i + 0.5) / len(metrics) # Evenly space 0 to 1
     
-    # Value
-    ax.text(x_pos, 0.6, str(value), ha='center', fontsize=24, fontweight='bold')
+    # Value (Purple)
+    ax.text(x_pos, 0.6, str(value), ha='center', fontsize=24, fontweight='bold', color='rebeccapurple')
     
-    # Label
+    # Label (Grey)
     ax.text(x_pos, 0.4, label, ha='center', fontsize=14, color='grey')
 ```
 

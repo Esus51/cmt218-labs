@@ -3,12 +3,13 @@
 ## Goal
 
 Create a Bar Chart of monthly distances using Python's `matplotlib` library.
+**Why Matplotlib?** It is the grandmother of Python visualization libraries. While verbose, it gives you granular control over every element of the chart.
 
 ## Instructions
 
 ### 1. Setup
 
-Ensure you have `pandas` and `matplotlib` installed.
+Ensure you have `pandas` (for data loading) and `matplotlib` (for plotting) installed.
 
 ```bash
 pip install pandas matplotlib
@@ -20,6 +21,7 @@ pip install pandas matplotlib
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Load the data we extracted earlier
 df = pd.read_csv('../../data/distance_per_month.csv')
 ```
 
@@ -28,29 +30,39 @@ df = pd.read_csv('../../data/distance_per_month.csv')
 We use `plt.bar()` for bar charts.
 
 ```python
-# Create figure size
+# 1. Create figure size (Width, Height in inches)
+# This ensures our plot is large enough to be readable
 plt.figure(figsize=(10, 6))
 
-# Plot bar chart
+# 2. Plot bar chart
+# x = Month, y = TotalDistance
 plt.bar(df['Month'], df['TotalDistance'], color='rebeccapurple')
 
-# Add labels
-plt.title('Total Distance per Month')
-plt.xlabel('Month')
-plt.ylabel('Distance (km)')
+# 3. Add labels
+# Always label your axes so the viewer knows what units you are using
+plt.title('Total Distance per Month', fontsize=16)
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Distance (km)', fontsize=12)
 
-# Rotate x-axis labels for readability
+# 4. Rotate x-axis labels
+# If we have many months, horizontal text will overlap. Rotation fixes this.
 plt.xticks(rotation=45)
 
-# Adjust layout to prevent clipping
+# 5. Adjust layout
+# "Tight Layout" automatically adjusts subplot params so that the subplot(s) fits in to the figure area.
+# In simple terms: it stops your labels from being cut off.
 plt.tight_layout()
 
-# Display
+# 6. Display
 plt.show()
 ```
 
 ### 4. Saving
 
+You can save the plot programmatically.
+
 ```python
-plt.savefig('monthly_distance_chart.png')
+# Save to the current directory
+# dpi=300 ensures high resolution (standard for print/publications)
+plt.savefig('monthly_distance_chart.png', dpi=300)
 ```

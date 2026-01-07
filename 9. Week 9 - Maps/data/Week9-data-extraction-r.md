@@ -27,14 +27,18 @@ df <- read_csv("../../data/runs_only_redacted.csv")
 # Ensure we have the polyline string. 
 # Depending on your CSV structure, you might need to clean the column first.
 # Assuming column 'polyline' exists or is extracted.
-polylines <- df$map # or df$summary_polyline
-```
+# Extract the raw polyline string from the JSON-like format
+# The column usually looks like "{'id': ..., 'summary_polyline': 'abc...'}"
+# We use regex to grab the text between "summary_polyline': '" and "'"
 
-### 3. Decoding
+library(stringr)
+polylines <- str_extract(df$map, "(?<=summary_polyline': ')[^']+")
 
-`googlePolylines::decode` returns a list of coordinates (lat/lon).
+# Check if we have valid strings
+if (all(is.na(polylines))) {
+  stop("No polylines found! Check your regex or column format.")
+}
 
-```r
 coords_list <- decode(polylines)
 ```
 

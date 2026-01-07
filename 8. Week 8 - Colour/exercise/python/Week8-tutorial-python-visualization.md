@@ -30,8 +30,8 @@ To map values to colors, we need to:
 data_values = df['TotalDistance']
 norm = mcolors.Normalize(vmin=data_values.min(), vmax=data_values.max())
 
-# 2. Select Colormap (e.g., 'plasma', 'viridis', 'Blues')
-cmap = cm.get_cmap('plasma')
+# 2. Select Colormap (e.g., 'Purples', 'plasma', 'viridis')
+cmap = cm.get_cmap('Purples')
 
 # 3. Generate Colors
 colors = [cmap(norm(val)) for val in data_values]

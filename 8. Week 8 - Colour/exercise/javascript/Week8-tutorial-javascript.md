@@ -13,7 +13,7 @@ In D3, we can use `scaleSequential` to map continuous values to colors.
 ```javascript
 // Define a color scale
 const colorScale = d3.scaleSequential()
-    .interpolator(d3.interpolateBlues) // Or interpolateHsl, interpolateViridis
+    .interpolator(d3.interpolatePurples) // Or interpolateHsl, interpolateViridis
     .domain([0, d3.max(data, d => d.value)]);
 ```
 

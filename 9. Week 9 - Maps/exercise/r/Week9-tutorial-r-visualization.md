@@ -37,7 +37,7 @@ ggplot(runs_sf) +
 
 ```r
 ggplot(runs_sf) +
-  geom_sf(color = "red", alpha = 0.5) +
+  geom_sf(color = "rebeccapurple", alpha = 0.5) +
   
   # Clean look
   theme_void() +

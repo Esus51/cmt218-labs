@@ -8,7 +8,7 @@ Classify runs into **AM** (Morning) and **PM** (Afternoon/Evening) categories.
 
 ### 1. Setup
 
-`lubridate` helps extracting hours from dates.
+We use `lubridate` which makes working with dates and times in R very easy.
 
 ```r
 library(tidyverse)
@@ -17,12 +17,14 @@ library(lubridate)
 
 ### 2. Loading and Processing
 
+We load the data and create a new `Category` column.
+
 ```r
 df <- read_csv("../../data/runs_only_redacted.csv")
 
 processed <- df %>%
-  # Parse DateTime
-  mutate(Datetime = as.POSIXct(Date, format="%Y-%m-%d %H:%M:%S")) %>%
+  # Parse DateTime using ymd_hms (Year-Month-Day Hour-Minute-Second)
+  mutate(Datetime = ymd_hms(start_date)) %>%
   
   # Extract Hour (0-23)
   mutate(Hour = hour(Datetime)) %>%
@@ -30,13 +32,13 @@ processed <- df %>%
   # Classify using case_when
   mutate(Category = case_when(
     Hour < 12 ~ "AM",
-    TRUE      ~ "PM"
+    TRUE      ~ "PM"   # 'TRUE' acts as the 'else' catch-all
   ))
 ```
 
 ### 3. Aggregating
 
-Count runs per category.
+For a Pie Chart, we don't plot individual runs. We plot the size of the groups. We use `count()` to summarize.
 
 ```r
 counts <- processed %>%

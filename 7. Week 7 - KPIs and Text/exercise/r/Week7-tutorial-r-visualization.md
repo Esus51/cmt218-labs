@@ -25,10 +25,10 @@ Since we want to plot multiple unrelated numbers side-by-side, we create a new t
 
 ```r
 plot_data <- data.frame(
-  Label = c("Runs", "Distance"),
-  Value = c(df$TotalRuns, paste(df$TotalDistance, "km")),
-  x = c(1, 2), # Position on X axis
-  y = c(1, 1)  # Fixed Y Position
+  Label = c("Runs", "Distance", "Avg Dist"),
+  Value = c(df$TotalRuns, paste(df$TotalDistance, "km"), paste(df$AvgDistance, "km")),
+  x = c(1, 2, 3), # Position on X axis
+  y = c(1, 1, 1)  # Fixed Y Position
 )
 ```
 
@@ -44,7 +44,7 @@ ggplot(plot_data, aes(x = x, y = y)) +
   geom_text(aes(label = Label), size = 5, vjust = 1.5, color = "grey") +
   
   theme_void() + # Remove all grid/axes
-  scale_x_continuous(limits = c(0.5, 2.5))
+  scale_x_continuous(limits = c(0.5, 3.5))
 ```
 
 ### 5. Saving

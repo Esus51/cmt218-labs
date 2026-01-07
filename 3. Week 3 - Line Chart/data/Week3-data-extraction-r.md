@@ -8,7 +8,8 @@ Calculate the **Trailing 365-Day Total Distance** for each day.
 
 ### 1. Setup
 
-We use the `slider` package, which is excellent for window functions on dates.
+We use the `slider` package.
+**Why slider?** Standard R functions often struggle with "Date-aware" windows. If data is missing for a day, a standard "rolling mean over 365 rows" will break. `slider` creates windows based on the *Index* (the Date column itself), making it incredibly robust for time series.
 
 ```r
 install.packages("slider")
@@ -18,32 +19,35 @@ library(slider)
 
 ### 2. Loading and Aggregating
 
-Aggegate runs by day first.
+We first aggregate runs to get a single total per day.
 
 ```r
 df <- read_csv("../../data/runs_only_redacted.csv")
 
 daily_df <- df %>%
-  mutate(Date = as.Date(Date)) %>%
+  mutate(Date = as.Date(start_date)) %>% # Ensure Date format
   group_by(Date) %>%
-  summarise(DailyDist = sum(Distance, na.rm = TRUE)) %>%
+  summarise(DailyDist = sum(distance, na.rm = TRUE) / 1000) %>% # m to km
   arrange(Date)
 ```
 
 ### 3. Rolling Window Calculation
 
-We use `slide_index_sum` to look back 365 days from each row's `Date`.
+We use `slide_index_sum`.
+*   `.i`: The index column (Date). The window is calculated relative to *this*, not the row number.
+*   `.before`: The size of the window looking back.
 
 ```r
 result_df <- daily_df %>%
   mutate(
-    TotalDistanceMeters = slide_index_sum(
+    # "sum DailyDist where Date is between (CurrentDate - 365) and CurrentDate"
+    TotalDistance = slide_index_sum(
       x = DailyDist,
-      i = Date,       # The index column
-      before = 365    # Look back 365 days
+      i = Date,       
+      before = 365    
     )
   ) %>%
-  mutate(TotalDistance = round(TotalDistanceMeters / 1000, 2))
+  mutate(TotalDistance = round(TotalDistance, 2))
 ```
 
 ### 4. Saving

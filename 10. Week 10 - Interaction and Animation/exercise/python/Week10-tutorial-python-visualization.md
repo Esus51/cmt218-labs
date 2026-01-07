@@ -43,7 +43,7 @@ scatter = go.Scatter(
     y=df['Pace_min_km'],
     mode='markers',
     name='Runs',
-    marker=dict(color='#2c3e50', opacity=0.6)
+    marker=dict(color='rebeccapurple', opacity=0.6)
 )
 fig.add_trace(scatter, row=1, col=1)
 ```
@@ -58,7 +58,7 @@ bar = go.Bar(
     x=monthly['Month'],
     y=monthly['Distance_km'],
     name='Distance',
-    marker_color='#e74c3c'
+    marker_color='rebeccapurple'
 )
 fig.add_trace(bar, row=1, col=2)
 ```

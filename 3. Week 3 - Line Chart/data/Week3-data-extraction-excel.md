@@ -1,33 +1,56 @@
 # Week 3 - Data Extraction (Excel)
 
+## Introduction
+
+In this week, we are creating a **Line Chart** to visualize running volume over time.
+However, we don't just want daily distance (which is noisy); we want a **Trailing 365-Day Total**. This tells us, for any given day, "How many km have I run in the *last year*?"
+
 ## Goal
 
-Calculate **Trailing 365-Day Total Distance**.
+Calculate **Trailing 365-Day Total Distance** for every day.
+
+## The Challenge: Missing Dates
+
+Standard logic (`SUM(B2:B366)`) assumes row B2 was exactly 365 days ago.
+**BUT**, if you didn't run on Jan 5th, that date won't be in your raw data. Your rows are not consecutive days.
+*   **Implication**: If we just drag a formula down, we are summing the last 365 *runs*, not the last 365 *days*.
 
 ## Instructions
 
-### Step 1: Daily Aggregation (Pivot Table)
-Since we have multiple runs on some days and missing days, we first aggregate by day.
+### Step 1: Aggregate by Day
 
-1.  **Insert Pivot Table** from your raw data.
-2.  **Rows**: Date (Ensure it is ungrouped, i.e., shows individual days, not Years/Quarters).
-3.  **Values**: Sum of Distance.
-4.  **Copy/Paste**: Copy the result to a new sheet. Sort by Date Ascending.
+First, we need one row per day (summing up multiple runs on the same day).
 
-### Step 2: Handle Missing Dates (Crucial)
-Excel formulas look at previous *rows*, not previous *dates*. We need consecutive days.
-*   *Note: If extensive dates are missing, this is hard in Excel. For this dataset, if gaps are small, we can proceed, or create a 'Master Date Sequence' and VLOOKUP.*
-*   **Simple Method**: Assume daily data is mostly continuous or proceed with "Last 365 Entires" approximation (less accurate).
-*   **Accurate Method (Recommended)**:
-    1.  Create a column with Series Fill from Start Date to End Date (1-day steps).
-    2.  `VLOOKUP` your Daily Distances to this master list (Fill N/A with 0).
+1.  **Insert Pivot Table** from your raw `runs_only_redacted.csv`.
+2.  **Rows**: `Date` (Ungroup logic: Right-click Date > Group/Ungroup > Ensure it shows daily dates like "01/01/2019", not just "Jan").
+3.  **Values**: `Sum of Distance`.
+4.  **Copy/Paste**: Copy the result (headers and data). Paste as **Values** into a new sheet named `Processed`.
+
+### Step 2: Fix Missing Dates
+
+To do a true rolling window, we need a continuous timeline (Jan 1, Jan 2, Jan 3...) even if the distance is 0.
+
+1.  **Create a Date Master Column**:
+    *   In a new column (e.g., Column `E`), type your first date (e.g., `1/1/2019`).
+    *   Fill Series: Drag down or use **Home > Fill > Series** to create a row for every single day up to today.
+2.  **VLOOKUP Distance**:
+    *   In Column `F` (DailyDist), use VLOOKUP to pull data from your Pivot results.
+    *   `=IFNA(VLOOKUP(E2, A:B, 2, FALSE), 0)`
+    *   *Translation*: Look for this specific date (E2) in our Pivot data (A:B). If found, give me the distance. If not found (error), give me `0`.
 
 ### Step 3: Rolling Sum Formula
-Assuming Column A is Date, Column B is Daily Distance (with 0s for missing days):
 
-1.  Header C1: `Trailing 365`.
-2.  In Cell C366 (row 366): `=SUM(B2:B366)` (Sum of current day + 364 previous).
-3.  Drag down.
+Now that Column `F` has continuous daily data (including zeros):
+
+1.  Header `G1`: `Trailing 365`.
+2.  **The Formula**:
+    *   We can't calculate a full year's history for the first 364 days.
+    *   Scroll down to row 366 (representing the 365th day).
+    *   Formula: `=SUM(F2:F366)` (Sum of today + previous 364 days).
+3.  **Fill Down**: Double-click handle.
 
 ### Step 4: Save
-Save columns `Date` and `Trailing 365` as `trailing_365_distance.csv`.
+
+1.  Copy your continuous Date column (`E`) and the Trailing 365 column (`G`).
+2.  Paste as **Values** into a new workbook.
+3.  Save as `trailing_365_distance.csv`.

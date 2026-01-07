@@ -35,10 +35,13 @@ ax2.scatter(x, y)
 
 ### 3. Layout
 
-Use `tight_layout` to prevent overlap.
+Use `tight_layout` to prevent overlap and `suptitle` for a main title.
 
 ```python
-plt.tight_layout()
-plt.suptitle('My Dashboard')
+# Adjust layout to make room for the main title
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+
+plt.suptitle('Running Analytics Dashboard', fontsize=24)
+plt.savefig('dashboard.png', dpi=300)
 plt.show()
 ```

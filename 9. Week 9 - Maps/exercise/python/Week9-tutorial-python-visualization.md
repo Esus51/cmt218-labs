@@ -36,7 +36,7 @@ for feature in geojson['features']:
         lats = [p[1] for p in coords]
         
         # Plot
-        plt.plot(lons, lats, color='red', alpha=0.5, linewidth=1)
+        plt.plot(lons, lats, color='rebeccapurple', alpha=0.5, linewidth=1)
 ```
 
 ### 3. Formatting

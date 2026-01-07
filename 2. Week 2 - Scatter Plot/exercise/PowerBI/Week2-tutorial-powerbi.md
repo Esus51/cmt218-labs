@@ -1,5 +1,9 @@
 # Week 2 - Visualization (PowerBI)
 
+## Introduction
+
+Scatter plots are unique because they plot two numerical values against each other, requiring us to be careful about how Power BI aggregates data.
+
 ## Goal
 
 Create a **Scatter Plot** showing Distance vs. Average Pace.
@@ -15,25 +19,35 @@ Create a **Scatter Plot** showing Distance vs. Average Pace.
 ### 2. Create Visual
 
 1.  Select **Scatter Chart** from Visualizations.
-2.  Drag `Distance` to the **X-axis**.
-    *   *Note: Ensure it is "Don't Summarize" if Power BI tries to Sum it. Right-click the field in the well to check.*
-3.  Drag `AveragePace` (or `Pace`) to the **Y-axis**.
-    *   *Note: Ensure "Don't Summarize".*
+2.  **Define Axes**:
+    *   Drag `Distance` to the **X-axis**.
+    *   Drag `AveragePace` to the **Y-axis**.
+3.  **Critical Step: Don't Summarize**:
+    *   Power BI usually sums up numerical fields by default (e.g., showing one dot representing the sum of all distances).
+    *   Right-click the `Distance` field field in the visualization well (Where you dragged it).
+    *   Select **Don't Summarize**.
+    *   Repeat for `AveragePace` (Right-click > **Don't Summarize**).
+    *   *Result*: You should see many dots, one for each row in your data.
 
 ### 3. Average Lines (Analytics)
 
-1.  Go to the **Analytics** pane (Magnifying glass icon).
+To understand where the "center" of our data is, we add average lines.
+
+1.  Go to the **Analytics** pane (Magnifying glass icon next to the Paintbrush).
 2.  **Average Line**:
-    *   Add Line.
+    *   Click **Add Line**.
     *   Measure: `Distance`.
     *   Color: Grey.
-    *   Label: On.
-3.  Add another Average Line for `Pace`.
+    *   Data label: **On**.
+    *   *Result*: A vertical line showing the average distance run.
+3.  Add another Average Line for `AveragePace`.
+    *   *Result*: A horizontal line showing the average pace.
 
 ### 4. Format
 
-1.  **Markers**:
+1.  **Markers** (The dots):
     *   Shape: Circle.
-    *   Size: -10 (Adjust as needed).
-    *   Color: Purple.
-2.  **General > Title**: "Distance vs Pace".
+    *   Size: Change to -10 (or smaller) to reduce overlap.
+    *   Color: Select a theme color (Purple).
+2.  **General > Title**:
+    *   Text: "Distance vs Pace".

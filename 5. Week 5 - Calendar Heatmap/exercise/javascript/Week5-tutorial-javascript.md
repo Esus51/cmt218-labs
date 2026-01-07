@@ -29,7 +29,7 @@ const y = d3.scaleBand()
 
 // Color
 const myColor = d3.scaleSequential()
-    .interpolator(d3.interpolateYlGnBu)
+    .interpolator(d3.interpolatePurples)
     .domain([0, d3.max(data, d => d.TotalDistance)]);
 ```
 

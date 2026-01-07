@@ -23,3 +23,12 @@ Assemble a **Dashboard** from previous sheets.
 1.  Use **Horizontal** and **Vertical** containers for precise control.
 2.  **Titles**: Right-click sheet titles to Hide or Edit.
 3.  **Legends**: Removing redundant legends helps clean up the view. Click the dropdown on a legend > Remove from Dashboard.
+
+### 4. Interactivity (Use as Filter)
+
+Make your dashboard clickable!
+
+1.  Select the **Bar Chart** on the dashboard.
+2.  Click the small **Funnel Icon** ("Use as Filter") on the chart's border.
+3.  **Test it**: Click a bar. Watch the Scatter Plot and Map update to show data only for that month.
+4.  Repeat for the Pie Chart (Clicking a slice filters the rest).

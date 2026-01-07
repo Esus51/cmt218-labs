@@ -1,51 +1,70 @@
 # Week 2 - Data Extraction (Python)
 
+## Introduction
+
 In this week's exercise, we will extract data suitable for a scatter plot to analyze the relationship between Distance and Pace.
 
 ## Goal
 
-Create a `distance_vs_pace.csv` file.
+Create a `distance_vs_pace.csv` file containing two numerical columns for every run.
 
 ## Instructions
 
-1.  **Setup**:
-    *   Use the virtual environment you set up in Week 1.
-    *   Make sure `pandas` is installed.
+### 1. Setup
 
-2.  **Create Script**:
-    *   Create `extract_data.py`.
-    *   Import pandas.
+*   Use the virtual environment you set up in Week 1.
+*   Make sure `pandas` is installed.
 
-3.  **Process**:
-    *   **Read Data**:
-    ```python
-    df = pd.read_csv('../../data/runs_only_redacted.csv')
-    ```
-    *   **Calculate Metrics**:
-        *   Convert `distance` from meters to km (divide by 1000).
-        *   Calculate `AveragePace` (min/km).
-            *   We can compute pace from `average_speed` (m/s) if available:
-            *   `Pace (min/km) = (1000 / Speed (m/s)) / 60`
-    ```python
-    # Ensure column names are lowercase for consistency
-    df.columns = [c.lower() for c in df.columns]
-    
-    df['Distance'] = df['distance'] / 1000
-    
-    # Calculate Pace from Speed (formula: 16.667 / speed_in_m_s)
-    # We use apply to avoid division by zero errors
-    df['AveragePace'] = df['average_speed'].apply(lambda x: 16.666666667 / x if x > 0 else 0)
-    ```
-    *   **Filter**: Remove invalid entries.
-    ```python
-    df = df[(df['Distance'] > 0) & (df['AveragePace'] > 0)]
-    ```
+### 2. Create Script
 
-4.  **Output**:
-    ```python
-    df[['Distance', 'AveragePace']].round(2).to_csv('distance_vs_pace.csv', index=False)
-    ```
+*   Create `extract_data.py`.
+*   Import pandas.
+
+### 3. Process
+
+**Read Data**:
+```python
+import pandas as pd
+df = pd.read_csv('../../data/runs_only_redacted.csv')
+```
+
+**Calculate Metrics**:
+We need to handle units carefully.
+*   **Distance**: Convert from meters to km.
+*   **Pace**: Run speed is usually stored as m/s (`average_speed`). Runners prefer min/km.
+    *   Formula: `(1000 / Speed_in_m_s) / 60`.
+
+```python
+# Create explicit copies to avoid SettingWithCopy warnings if filtering later
+df = df.copy()
+
+# 1. Distance in km
+df['Distance_km'] = df['distance'] / 1000
+
+# 2. Pace in min/km
+# We could use (Time / 60) / Distance_km, but using average_speed is often more robust against pauses.
+# 16.667 is the conversion factor ( (1000 m/km) / (60 s/min) ) approx.
+# We use apply/lambda to handle division by zero safely.
+df['AveragePace'] = df['average_speed'].apply(lambda x: (1000 / x) / 60 if x > 0 else 0)
+```
+
+**Filter**:
+Scatter plots show outliers clearly. We should remove invalid data (e.g., zero distance) but keep genuine outliers to visualize them.
+
+```python
+# Keep only valid runs
+df_clean = df[(df['Distance_km'] > 0) & (df['AveragePace'] > 0) & (df['AveragePace'] < 20)] 
+# < 20 filters out walking/errors (20 min/km is 3km/h walking speed)
+```
+
+### 4. Output
+
+Save just the columns we need.
+
+```python
+df_clean[['Distance_km', 'AveragePace']].round(2).to_csv('distance_vs_pace.csv', index=False)
+```
 
 ## Verification
 
-Check your CSV. It should have two columns of numerical data.
+Check your CSV. It should have two columns of numerical data (`Distance_km` and `AveragePace`).

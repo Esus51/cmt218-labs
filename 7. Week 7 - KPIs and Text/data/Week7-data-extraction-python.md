@@ -31,7 +31,7 @@ Create `kpi_stats.csv` with a single row of summary data.
         'TotalRuns': total_runs,
         'TotalDistance': round(total_distance, 2),
         'LongestRun': round(longest_run, 2),
-        'AvgDistance': round(average_distance, 2)
+        'AvgDistance': round(avg_distance, 2)
     }])
     ```
 

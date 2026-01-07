@@ -35,7 +35,7 @@ ggplot(df, aes(x = Week, y = Year, fill = TotalDistance)) +
   geom_tile(color = "white") +
   
   # Custom Gradient
-  scale_fill_gradient(low = "lightgreen", high = "darkgreen") +
+  scale_fill_gradient(low = "#E6E6FA", high = "rebeccapurple") +
   
   # Ensure Y axis shows years as integers, not decimals
   scale_y_continuous(breaks = unique(df$Year)) +
