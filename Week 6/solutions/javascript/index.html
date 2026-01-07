@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6 - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>Running Dashboard</h1>
+        </header>
+
+        <div class="card" id="bar-chart-container">
+            <h2>Monthly Distance</h2>
+            <div id="bar-chart"></div>
+        </div>
+
+        <div class="card" id="line-chart-container">
+            <h2>Trailing 365 Days</h2>
+            <div id="line-chart"></div>
+        </div>
+
+        <div class="card" id="pie-chart-container">
+            <h2>Time of Day</h2>
+            <div id="pie-chart"></div>
+        </div>
+
+        <div class="card" id="scatter-chart-container">
+            <h2>Distance vs Pace</h2>
+            <div id="scatter-chart"></div>
+        </div>
+
+        <div class="card" id="heatmap-container">
+            <h2>Annual Heatmap</h2>
+            <div id="heatmap-chart"></div>
+        </div>
+
+        <div id="tooltip" class="tooltip" style="opacity:0;"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ecf0f1;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header {
+    grid-column: 1 / -1;
+    text-align: center;
+    background: #2c3e50;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.card {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: left;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 0.5rem;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 0.9em;
+    z-index: 10;
+}
+
+/* Specific chart sizing if needed */
+#heatmap-container {
+    grid-column: 1 / -1;
+    /* Full width for heatmap */
+}

@@ -1,0 +1,36 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #2c3e50;
+    color: white;
+}
+
+.container {
+    text-align: center;
+}
+
+#map {
+    background: #34495e;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+path {
+    fill: none;
+    stroke: #e74c3c;
+    stroke-width: 1.5;
+    stroke-opacity: 0.6;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+path:hover {
+    stroke: #f1c40f;
+    stroke-width: 3;
+    stroke-opacity: 1;
+    cursor: pointer;
+}
