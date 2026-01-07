@@ -1,0 +1,62 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 2rem;
+    color: #2c3e50;
+}
+
+.dot {
+    fill: rebeccapurple;
+    opacity: 0.6;
+    transition: opacity 0.2s, r 0.2s;
+}
+
+.dot.highlighted {
+    fill: #e74c3c;
+    opacity: 1;
+    r: 6;
+    /* Slightly larger */
+}
+
+/* Guideline styles */
+.guideline {
+    stroke: #e74c3c;
+    stroke-width: 1px;
+    stroke-dasharray: 4;
+    opacity: 0.7;
+}
+
+/* Average dot style */
+.avg-dot {
+    fill: #2ecc71;
+    stroke: #27ae60;
+    stroke-width: 2px;
+}
+
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 0.9em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
