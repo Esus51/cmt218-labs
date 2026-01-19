@@ -1,0 +1,54 @@
+---
+title: "Lab 2 Preprocessing"
+output: pdf_document
+date: "2026-01-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2 Preprocessing
+
+## Goal
+
+Create a Scatter Plot to analyze the relationship between Distance and Pace.
+
+## Importing data
+
+We can import Martins csv, or use the following code to download the same dataset.
+
+```{r echo = TRUE, eval = TRUE}
+file_id <- "1ymbNqfv9s6YGZzN93HFKAhjg0Z5xZXV1"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+df <- read.csv(url)
+```
+
+## 1.Create Distance and Pace Columns
+
+Create a new DataFrame that contains:
+
+- Distance in kilometres (km)
+
+- Pace in minutes per kilometre (min/km)
+
+> **Reminder:**  
+> Convert units before calculating pace.
+
+```{r eval=TRUE, echo = FALSE}
+distancevpace <- data.frame(
+  Distance_km = df$distance / 1000, #convert to km
+  Pace_min_km = (1000 / df$average_speed) / 60 #convert to km/minute.
+)
+
+head(distancevpace)
+```
+
+## Save csv
+
+Save the dataframe to csv
+
+```{r eval = FALSE, echo = TRUE}
+write.csv(distancevpace, "distancevpace.csv", row.names = FALSE)
+```

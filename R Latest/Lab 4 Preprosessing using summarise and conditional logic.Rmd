@@ -1,0 +1,156 @@
+---
+title: "Lab 4 Pie Chart Preprocessing and conditional logic"
+output: pdf_document
+date: "2026-01-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Week 4 Preprocessing
+
+## Goal
+
+Create a Pie Chart to show the distribution of runs by Time of Day.
+
+## Imports
+
+```{r eval = TRUE, echo = TRUE}
+library(dplyr) # We will now use dplyr as standard
+
+file_id <- "1ymbNqfv9s6YGZzN93HFKAhjg0Z5xZXV1"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+df <- read.csv(url)
+
+```
+
+## Create frequency table for runs
+
+We want to create a dataframe that counts how many days contain runs in the AM and PM. Since we cannot assume there is only one run per day, we also include a third category called Both, for days where runs occurred in both the morning and afternoon/evening.
+
+Using either the steps below or your own method, create a summary table showing the number of days in each category (AM, PM, and Both).
+
+### 1. Create new columns for `datetime`, `Date`, `AMPM`
+
+We first parse the `start_date` string into a proper date–time column called `datetime` using:
+
+`as.POSIXct(start_date, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")`
+
+Once we have `datetime`, we can:
+
+- Use `as.Date(datetime)` to extract the calendar date (year–month–day). This can then be used to group activities by day.
+- Use `format(datetime, "%p")` to extract whether the activity occurred in the AM or PM.
+
+In the model answer below, I use these steps as a template to build the required summary table.
+
+
+```{r echo = FALSE, eval = FALSE}
+daily_summary <- df %>%
+  mutate(
+    datetime = #Your answer
+    Date = #Your answer
+    AMPM = #Your answer
+  ) %>%
+  select(Date, AMPM) #Just to show the relevant fields.
+head(daily_summary)
+```
+
+```{r echo = FALSE, eval = TRUE}
+daily_summary <- df %>%
+  mutate(
+    datetime = as.POSIXct(start_date, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+    Date = as.Date(datetime),
+    AMPM = format(datetime, "%p")
+  ) %>%
+  select(Date, AMPM)
+head(daily_summary)
+```
+
+### 2. Group by
+
+We can pipe `%>%` our data into `group_by(Date)` to group activities by day. This tags each row with a group label based on the `Date` column, but it does not perform any calculations by itself. Calculations are typically performed afterwards using functions such as `summarise()`.
+
+```{r echo = FALSE, eval = TRUE}
+daily_summary <- df %>%
+  mutate(
+    datetime = as.POSIXct(start_date, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+    Date = as.Date(datetime),
+    AMPM = format(datetime, "%p")
+  ) %>%
+  group_by(Date) %>%
+  select(Date, AMPM)
+head(daily_summary)
+```
+
+### 3. Conditional Logic
+
+We now want to create a daily summary, but we also need to apply a condition. One approach is to count how many unique values of `AMPM` occur on each day. If there are two (i.e., both AM and PM), we label that day as "Both".
+
+In R, we can apply conditional logic using:
+
+`ifelse(condition, value_if_true, value_if_false)`
+
+We use this inside `summarise()` as `summarise()` collapses multiple rows per day into a single row by calculating summary values (i.e., aggregating the data).
+
+Using the example below (or your own method), apply this logic to your dataframe.
+
+
+```{r echo = TRUE, eval = TRUE}
+# Quick example
+example <- data.frame(
+  Date = as.Date(c("2025-07-19","2025-07-19","2025-07-20","2025-07-21","2025-07-21")),
+  AMPM = c("AM", "PM", "AM", "PM", "PM")
+) %>%
+  group_by(Date) %>%
+  summarise(
+    period = ifelse(n_distinct(AMPM) == 2, "Both", first(AMPM)),
+    .groups = "drop"
+  )
+
+example
+
+```
+The actual output you should aim for is below;
+
+```{r echo = FALSE, eval = TRUE}
+
+daily_summary <- df %>%
+  mutate(
+    datetime = as.POSIXct(start_date, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+    Date = as.Date(datetime),
+    AMPM = format(datetime, "%p")  # "AM" or "PM"
+  ) %>%
+  group_by(Date) %>%
+  summarise(
+    period = ifelse(n_distinct(AMPM) == 2, "Both", first(AMPM)),
+    .groups = "drop"
+  )
+head(daily_summary)
+
+```
+
+### 4. Provide counts
+
+Provide counts. This can be done in a single operation.
+
+```{r echo = FALSE, eval = TRUE}
+daily_summary <- df %>%
+  mutate(
+    datetime = as.POSIXct(start_date, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+    Date = as.Date(datetime),
+    AMPM = format(datetime, "%p")  # "AM" or "PM"
+  ) %>%
+  group_by(Date) %>%
+  summarise(
+    period = ifelse(n_distinct(AMPM) == 2, "Both", first(AMPM)),
+    .groups = "drop"
+  ) %>%
+  count(period)
+
+daily_summary
+```
+
+### 5. Save to csv
+

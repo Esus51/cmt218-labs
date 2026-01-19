@@ -1,0 +1,86 @@
+---
+title: "Lab 1 Preprocessing"
+output: pdf_document
+date: "2026-01-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Week 1 Data Preprocessing
+
+In this week's exercise, we will check our data and prepare it for visualisation.
+
+## Goals
+
+- Calculate total distance per month.
+- Save into a new csv.
+
+## 1. Importing data
+
+We can import Martins csv, or use the follwing code to download the same dataset.
+
+```{r echo = TRUE, eval = TRUE}
+file_id <- "1ymbNqfv9s6YGZzN93HFKAhjg0Z5xZXV1"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+df <- read.csv(url)
+```
+
+## 2. Saving to CSV
+
+If we downloaded the data we can re-save to csv with;
+
+```{r echo = TRUE, eval = FALSE}
+write.csv(df, "runningdata.csv", row.names = FALSE)
+```
+
+If you are unsure where the file is saved to you can check the working directory with;
+
+```{r echo = TRUE, eval = FALSE}
+getwd()
+```
+
+You can open and investigate the csv in excel, text editor or spreadsheet program of your choice.
+
+## 3. Explore the dataframe in the viewer
+
+Double click `df` in the environment pane usually on the right to open the data in the viewer
+
+[!bardata](Images/barchartdata.png)
+
+## 4. Get the column headers programatically.
+
+```{r eval=TRUE, echo = FALSE}
+colnames(df)
+```
+## 5. Create a new column containing only the year and month from the date data.
+
+You have choices in how to do this, I recommend you avoid packages at this point and use `as.POSIXct`.
+https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/as.POSIX*
+
+You can follow the previous step with `format`.
+https://www.geeksforgeeks.org/r-language/how-to-use-date-formats-in-r/
+
+```{r eval = TRUE, echo = FALSE}
+
+# Convert start_date to datetime
+df$Date <- as.POSIXct(df$start_date, tz = "UTC")
+df$YearMonth <- format(df$Date, "%Y-%m")
+head(df$YearMonth)
+```
+## 6. Aggregate data
+
+Using `aggregate(response ~ group, data = df, FUN = ...)`, create a new dataframe that groups runs by YearMonth and sums Distance to calculate the total distance run each month.
+
+```{r eval = TRUE, echo = FALSE}
+monthly <- aggregate(distance ~ YearMonth, data = df, sum)
+head(monthly)
+```
+
+## 7. Save data to csv
+
+```{r eval = FALSE, echo = TRUE}
+write.csv(monthly, "monthly_stats.csv", row.names = FALSE)
+```

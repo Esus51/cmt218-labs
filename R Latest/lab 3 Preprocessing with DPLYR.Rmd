@@ -1,0 +1,200 @@
+---
+title: "Lab 3 Preprocessing with DPLYR"
+output: pdf_document
+date: "2026-01-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab 3 Preprocessing with DPLYR
+
+### Goal 
+
+Create a Line Chart to visualize the trend of Trailing 365-Day Distance over time.
+
+## Chaining functions
+
+You might see %>% in R, this belongs to a package that is part of dplyr along with other useful functions, they are not required, but so commonly used that when searching for solutions you should be aware of them.
+
+To install;
+
+```{r packages, echo = TRUE, eval = FALSE}
+install.packages("tidyverse") 
+#note if you chose to do this in week 2
+#you already have the required packages.
+#or
+install.packages("dplyr")
+```
+
+```{r dplyr, echo = TRUE}
+
+library(dplyr)
+
+df <- data.frame(
+  name = c("Alice", "Bob", "Charlie", "Alice", "Bob", "Charlie"),
+  score = c(80, 75, 90, 85, 95, 100)
+)
+df
+```
+Note that there are only three names in the above dataframe.
+
+```{r summarise, echo = TRUE}
+
+summarise(group_by(df, name), avg_score = mean(score))
+
+```
+The above function demonstrates summarise, this is used for collapsing a table into quick summary values, above we have grouped by name, and provided a 'summary' of the persons average score.
+
+```{r chaining, echo = TRUE}
+
+df %>%
+  group_by(name) %>%
+  summarise(avg_score = mean(score))
+
+```
+We can achieve exactly the same results with chaining %>%. First we declare the dataframe, followed by grouping the rows, and then calculating the average score. You can continue to chain further operations. The advantage of this method is that it minimizes the need to nest functions. The latest version of R has '|>' another piping method that works similarly, for age related reasons this tends to be less common and does have some differences
+
+```{r anotherpipe, echo = TRUE}
+#Another example taking the mean of score via piping
+df$score %>% mean()
+df$score |> mean()
+df$score %>% mean() %>% round() #dplyr
+df$score |> mean() |> round() #New R
+round(mean(df$score)) #Traditional programming with nested functions
+
+round(3.14159, digits = 2) #round takes two arguments the value to round and digits
+#both methods default to piping the first argument
+3.14159 %>% round(digits=2)
+3.14159 |> round(digits=2)
+2 %>% round(3.14159, digits = .) #the stop specifies a position
+2 |> round(3.14159, digits = _) #the underscore specifies the positions
+
+#mutate becomes useful for creating or modifying columns in a pipeline.
+x<-c(1,2,3)
+y<-sin(x)
+dt<- data.frame(x = x, y = y)
+dt$newcol <- cos(dt$x) #Base style
+dt <- dt %>%
+  #uncomment to explore
+  #newcol <- cos(x)
+  #df$newcol <- cos(df$x) #You will notice that <- causes an error in the pipline 
+  #{dt$newcol <- cos(dt$x); dt} # you can still use this with {}, it is a bit convoluted
+  mutate(newcol = cos(x)) #Common method for changing columns in pipelines
+dt
+
+```
+
+## Importing
+
+```{r echo = TRUE, eval = TRUE}
+file_id <- "1ymbNqfv9s6YGZzN93HFKAhjg0Z5xZXV1"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+df <- read.csv(url)
+```
+
+## 1. Create a daily totals dataframe
+
+Your original data (df) has one row per activity/run.
+But we want a new dataframe with one row per day, showing the total distance run that day.
+
+>Hint:
+>
+>Using mutate or otherwise create a new dataframe called daily with:
+>
+>date: the calendar day (YYYY-MM-DD)
+>
+>day_km: total kilometres run on that day
+>
+>`%>%` chain or otherwise into a group by to split the data by day
+>
+>`%>%` chain again or otherwise into a `summarise` of the information, aggregating on the sum of distance.
+
+
+```{r eval = TRUE, echo = FALSE}
+#Daily km (runs only)
+daily <- df %>%
+  mutate(
+    date = as.Date(start_date),
+    km   = distance / 1000
+  ) %>%
+  group_by(date) %>%
+  summarise(day_km = sum(km))
+
+head(daily)
+
+```
+
+## 2. Calculate running 365 day km total.
+
+Next, calculate the running total distance over the previous 365 days. You should note that not every day has a run, and may first need to allocate 0km to these missing days. Note there are multiple methods of doing this, your method is less important than your understanding of a method. I will outline steps to my method;
+
+> Step 1:
+>
+> Consider creating a full list of days in a vector between `min()` and `max()` of the days in the data set using `seq()` `by = "day".
+
+```{r eval = TRUE, echo = FALSE}
+#Create list of days
+all_days <- data.frame(date = seq(min(daily$date),
+                                  max(daily$date),
+                                  by = "day"))
+head(all_days)
+
+```
+
+> Step 2:
+>
+> Compare the complete list of dates and adding zero to the missing ones. 
+> Start with `left_join(daily, by = "date")`.
+> Chain into `mutate(day_km = ifelse(is.na(day_km), 0, day_km))` ie set the value to zero if not a number.
+> Followed by `arrange`
+
+[https://dplyr.tidyverse.org/reference/mutate-joins.html](https://dplyr.tidyverse.org/reference/mutate-joins.html)
+[https://dplyr.tidyverse.org/reference/arrange.html](https://dplyr.tidyverse.org/reference/arrange.html)
+
+```{r eval = TRUE, echo = FALSE}
+
+#Compare and join days, to enter zero on missing ones
+daily <- all_days %>%
+  left_join(daily, by = "date") %>%
+  mutate(day_km = ifelse(is.na(day_km), 0, day_km)) %>%
+  arrange(date)
+head(daily)
+
+```
+
+> Step 3:
+>
+> Calculate the cumulative sum for the last 365 days.
+>
+> Start by mutating `daily` to contain:
+>
+> cumsum() or the cumulative sum of the distance (we will call `cs`).
+>
+> trailing_365km = cs - dplyr::lag(cs, 365) ie the cumulative sum - the cumulative sum from 365 days ago.
+>
+> NOTE: Im printing tail() now not head as the first 364 days are NA.
+
+$$
+\text{trailing\_365}(t) = cs(t) - cs(t-365)
+$$
+
+
+[https://dplyr.tidyverse.org/reference/lead-lag.html](https://dplyr.tidyverse.org/reference/lead-lag.html)
+
+```{r eval = TRUE, echo = FALSE}
+
+#Trailing sum
+trailing <- daily %>%
+  mutate(
+    cs = cumsum(day_km),
+    trailing_365km = cs - dplyr::lag(cs, 365)
+  )
+
+tail(trailing)
+
+```
+
+## 3. Lastly save the CSV.

@@ -1,0 +1,117 @@
+---
+title: "Lab 7 Preprocessing Maps"
+output: pdf_document
+date: "2026-01-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Maps
+
+By now, you should feel comfortable creating basic interactive charts in python. This week, we’ll step up the complexity and work with maps. Maps can be quite time consuming to produce.
+
+Before you start plotting, think about your data:
+
+What kind of location data do I have? (e.g., latitude/longitude, postcodes, addresses, shapefiles, GeoJSON)
+
+What format does my chosen plotting package require?
+
+Would a different package make this easier? (and what format does that one need?)
+
+## Imports
+
+```{r eval = TRUE, echo = TRUE}
+
+library(dplyr)
+library(plotly)
+library(ggplot2)
+library(googlePolylines) #Introduced this week
+
+file_id <- "1ymbNqfv9s6YGZzN93HFKAhjg0Z5xZXV1"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+df <- read.csv(url)
+
+```
+
+## 1. Find data
+
+Martins runs only data has a column called maps.
+
+- What are the types of data contained? What other observations can you make? Consider how to decode this information. Print a single run. Notice the number of escapes `\` appearing.
+
+```{r answer, echo = FALSE, include = FALSE, eval = FALSE}
+# JSON like data with single quotes and backslashes including a polyline
+# Just a data point for now
+fld <- df$map[1]
+# split on single quotes
+parts <- strsplit(fld, "'")[[1]]
+print(parts[8])
+```
+
+## 2. Create dataframe
+
+Taking a single datapoint from Martins Runs can you create a dataframe of longditudes and latitudes.
+
+>**HINT**:
+>
+> You will probably use google Polylines.
+>
+> Break into steps based on your answer to 1).
+>
+> The polyline may now include characters such as '\\' gsub is a great method for cleaning ie `gsub("\\\\", "\\", poly, fixed = TRUE)`
+
+```{r coords, echo = FALSE, eval = TRUE}
+fld <- df$map[1]
+# split on single quotes
+parts <- strsplit(fld, "'")[[1]]
+#print(parts) Useful print
+# 4th piece is the polyline
+poly <- parts[8]
+# The string in the previous naturally escapes the backslashes, we need to compensate. You can check this with;
+# print(poly)
+poly <- gsub("\\\\", "\\", poly, fixed = TRUE)
+
+# Decode
+coords <- googlePolylines::decode(poly)[[1]]  # data.frame with columns 'lon' and 'lat'
+
+head(coords,5)
+```
+
+## 3. Last 20 Runs (Optional)
+
+You can just work with the above dataframe if you prefer. The following is a challenge! If you do attempt it, ensure you understand what is going on.
+
+Retrieve the most recent 20 runs and store them in a DataFrame similar to the previous one, but with an additional column for date. Each point should have a date, so the date will appear multiple times.
+
+```{r twentyruns, echo = FALSE, eval = TRUE}
+# Most recent 20 runs
+last20 <- df %>%
+  mutate(start_date = as.POSIXct(start_date, "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")) %>%
+  arrange(desc(start_date)) %>%
+  slice_head(n = 20)
+
+# Date labels
+date_lab <- format(last20$start_date, "%d-%m-%Y")
+
+coords_df <- bind_rows(lapply(seq_len(nrow(last20)), function(i) {
+  fld <- last20$map[i]
+  parts <- strsplit(fld, "'")[[1]]
+  poly <- parts[8]
+  poly <- gsub("\\\\", "\\", poly, fixed = TRUE)
+
+  coords <- googlePolylines::decode(enc2utf8(poly))[[1]]
+  coords$date <- date_lab[i]
+  coords
+}))
+
+head(coords_df)
+```
+
+## 4. Save as csv
+
+```{r eval = FALSE, echo = TRUE}
+write.csv(coords_df, "map.csv", row.names = FALSE)
+```

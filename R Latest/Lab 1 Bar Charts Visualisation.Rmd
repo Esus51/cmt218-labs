@@ -1,0 +1,54 @@
+---
+title: "Lab 1 Bar Chart Visualisation"
+output: pdf_document
+date: "2026-01-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab 1 Bar Chart Visualisation
+
+In this week excersise we will create a categorical chart with year and month as the categories and distance as the variable.
+
+## Importing data
+
+We can import the csv created in the preprocessing, or use the following code to download an already made csv.
+
+```{r echo = TRUE, eval = TRUE}
+file_id <- "1MLylJ6cizJlTFVi_FdiF11pjpT3brlsO"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+monthly_stats <- read.csv(url)
+head(monthly_stats)
+```
+
+## 1. Plot Distance by Month
+
+Using `barplot`, create a bar chart that shows the total distance run in each month.
+
+```{r echo = FALSE, eval = TRUE}
+barplot(monthly_stats$TotalDistance/1000,
+        names.arg = monthly_stats$YearMonth,
+)
+```
+
+## 2. Add Titles
+
+Axis labels should include units unless there is a good reason not to. For crowded month labels on a bar chart, you can rotate the x-axis labels using `las` (from `par()` graphical parameters) and shrink them using `cex.names` to improve readability and prevent the axis title being hidden. The `barplot()` arguments `main`, `xlab`, and `ylab` set the plot title and axis labels.
+
+https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/barplot
+
+https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/par
+
+```{r echo = FALSE, eval = TRUE}
+barplot(monthly_stats$TotalDistance/1000,
+        names.arg = monthly_stats$YearMonth,
+        main = "Total Distance Run Per Month",
+        xlab = "Year-Month",
+        ylab = "Distance(km)",
+        las = 2,
+        cex.names = 0.7
+)
+```

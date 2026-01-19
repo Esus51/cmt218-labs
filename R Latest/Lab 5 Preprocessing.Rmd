@@ -1,0 +1,94 @@
+---
+title: "Lab 5 Preprocessing Heatmaps and Legends"
+output: pdf_document
+date: "2026-01-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+# Lab 5 Heatmaps Preprocessing
+
+## Goal
+
+Create a calendar-style heatmap by aggregating total distance by Year and Week.
+
+## Importing
+
+```{r eval = TRUE, echo = TRUE}
+library(dplyr)
+library(tidyr) #recommended for this week
+
+file_id <- "1ymbNqfv9s6YGZzN93HFKAhjg0Z5xZXV1"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+df <- read.csv(url)
+
+```
+
+## 1. Extract required fields
+
+Our objective is to create a checkerboard-style heatmap.  
+A heatmap typically requires three variables:
+
+- x-axis: Week number  
+- y-axis: Year  
+- z-axis (colour): Distance
+
+The first step is to collate the required information into a DataFrame containing:
+
+- `Year`
+- `Week`
+- `Distance`
+
+> Notes:
+>
+> %G = ISO week-based year
+>
+> %V = ISO week number (01–53)
+
+```{r echo = FALSE, eval = TRUE}
+
+df$Date <- as.POSIXct(df$start_date, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+
+weekly <- data.frame(
+  Year = strftime(df$Date, "%G"),
+  Week = strftime(df$Date, "%V"),
+  Distance_km = df$distance / 1000
+)
+
+head(weekly)
+
+```
+
+## 2. Summarise by year and day.
+
+Get the total distance for each week of each year. At this step it is recommended to fill missing values with zero, this will help with general tidyness of your heatmap. A great library for this is `tidyr` imported above. A great function to use is `complete()`.
+
+[https://tidyr.tidyverse.org/reference/complete.html](https://tidyr.tidyverse.org/reference/complete.html)
+
+```{r echo = FALSE, eval = FALSE}
+
+weekly_sum <- weekly %>%
+  mutate(
+    Year = as.integer(Year), #ensure values are integers
+    Week = as.integer(Week)
+  ) %>%
+  group_by(Year, Week) %>%
+  summarise(TotalDistance = sum(Distance_km), .groups = "drop") %>%
+  complete(Year, Week = 1:53, fill = list(TotalDistance = 0)) # set missing weeks from 1:53
+
+head(weekly_sum)
+```
+
+## 3. Save
+
+```{r echo = FALSE, eval = FALSE}
+write.csv(weekly_sum, "weeklysum.csv", row.names = FALSE)
+
+```

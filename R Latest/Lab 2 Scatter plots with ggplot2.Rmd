@@ -1,0 +1,112 @@
+---
+title: "Lab 2 Visualisation with ggplot2"
+output: pdf_document
+date: "2026-01-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2 Scatter plots with ggplot2
+
+## Goal
+
+Create a Scatter Plot to analyze the relationship between Distance and Pace.
+
+## GGPlot2
+
+We can install ggplot2 as part of the tidyverse (an excellent collection of datascience tools) or on its own via running;
+```{r packages, echo = TRUE, eval = FALSE}
+install.packages("tidyverse")
+#or
+install.packages("ggplot2")
+```
+
+Below is a generic plot with GGPlot2, you will notice the aes() function, this controls the mapping of the data to the attributes of the visualisation, in this case the axis. The structure is always going to start with x, and y ie aes(x,y,...), another common mapping might be color, or colour = .... 
+
+You will notice the next function is the geom_line. This tells ggplot how to represent the data, geoms can be found here [R Geoms](https://ggplot2.tidyverse.org/reference/index.html), some common examples are geom_line(), geom_point() and geom_bar() or column. These can be added to the chart so you have multiple, to create interesting effect you can stack multiple of the same type.
+
+There are then labels, you should always have these without good reasons, and finally themes that are preset methods of formatting the non data aspects of the visualisation you can tweak 
+
+[R Themes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+
+```{r sinexample, echo = TRUE}
+# Load library
+library(ggplot2)
+
+# Create data
+x <- seq(0, 2*pi, length.out = 100)
+y <- sin(x)
+df <- data.frame(x = x, y = y)
+
+# Plot
+ggplot(df, aes(x = x, y = y)) +
+  geom_line(color = "blue", linewidth = 1) +
+  geom_point(color = "red", size = 2) +
+  labs(
+    title = "y = sin(x)",
+    x = "x",
+    y = "sin(x)"
+  ) +
+  theme_minimal()
+```
+
+## Imports
+
+```{r eval = TRUE, echo = TRUE}
+library(ggplot2) # Introduced this week
+
+file_id <- "1N1UERM9IGhJ29apnDalVLhx9EJBmvH-v"
+url <- paste0("https://drive.google.com/uc?id=", file_id)
+
+distancevpace <- read.csv(url)
+head(distancevpace)
+
+```
+
+## 1. Create a scatter plot of distance vs pace
+
+Using ggplot2 and `geom_point()` create a scatter plot of distance vs pace.
+
+https://ggplot2.tidyverse.org/reference/geom_point.html
+
+```{r eval = TRUE, echo = FALSE}
+ggplot(distancevpace, aes(x = Distance_km, y = Pace_min_km)) +
+  geom_point() +
+  labs(
+    title = "Distance vs Pace",
+    x = "Distance (km)",
+    y = "Pace (min/km)"
+  )
+```
+
+## 2. Format the chart
+
+Change the colour of the points setting the `color` option within geom_point.
+
+```{r echo = FALSE, eval = TRUE}
+ggplot(distancevpace, aes(x = Distance_km, y = Pace_min_km)) +
+  geom_point(color="purple") +
+  labs(
+    title = "Distance vs Pace",
+    x = "Distance (km)",
+    y = "Pace (min/km)"
+  )
+```
+
+## R Plotting/Visualisation Packages Background
+
+There are many different packages and methods for visualising data in R. Prior to this week we have experimented with the basic R plot function. The syntax is quick and functional, the output defaults to the standard R graphics device (in R studio the plot window), and performance is fast. These qualities can make this method excellent for quick data exploration, quick for producing publication quality charts, and via changing the drawing device can be rendered with some interactivity in a webbrowser. The disadvantages of this is that there are many limits to the customisations along with few resources for creating charts with any complexity with this method, so it can quickly become a challenge to make little more than basic visualisations.
+
+In R, it becomes especially noticeable that visualisation relies on a system of stages or events, and as a result, different plotting packages can be difficult to compare directly, as the package may cover different stages and events, overlapping rather than replacing. One key stage in the visualization process is the mapping stage, where we describe what we want to visualize by mapping variables to visual properties such as axes, colours, sizes, and shapes.
+
+Because of its popularity, iconic status in the R ecosystem, and the wide variety of visualizations it makes easy to produce, this lab introduced the ggplot system of aesthetic mapping, originally inspired by The Grammar of Graphics by Leland Wilkinson.
+
+We have begun by rendering static visualizations using ggplot2, and in future labs we will move to ggplotly to add interactivity while retaing the aesthetic mapping approach of contructing visualisations.
+
+It should be noted that it's also possible to create visualizations directly using Plotly’s own argument-based mapping style, which is a powerful alternative, that we will see later in the course.
+
+One method of building your visualisation is to search for templates, similar visualisations that you want to create and modify them for your purpose, the graph gallery is a great start. 
+
+[R Graph Gallery](https://r-graph-gallery.com/network.html).
